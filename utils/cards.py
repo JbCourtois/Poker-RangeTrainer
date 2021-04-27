@@ -70,6 +70,19 @@ class CardSet(list):
     def __repr__(self):
         return ''.join(map(repr, self))
 
+    @property
+    def token(self):
+        if len(self) <= 1:
+            return repr(self)
+
+        ranks = ''.join(sorted(card.rank for card in self))
+        suffix = (
+            '' if self[0].rank == self[1].rank else
+            's' if self[0].suit == self[1].suit else
+            'o'
+        )
+        return ranks + suffix
+
     def as_eval(self):
         return HandRange(repr(self)).hands[0][0]
 
