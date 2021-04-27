@@ -70,7 +70,7 @@ class Card(namedtuple('Card', ['rank', 'suit'])):
         return cls(rank, suit)
 
 
-class CardSet(list):
+class CardIterableMixin:
     def __str__(self):
         return ' '.join(map(str, self))
 
@@ -81,6 +81,8 @@ class CardSet(list):
     def from_eval(cls, cards):
         return cls(map(Card.from_eval, cards))
 
+
+class Hole(CardIterableMixin, tuple):
     @property
     def token(self):
         if len(self) <= 1:
@@ -97,8 +99,13 @@ class CardSet(list):
     def as_eval(self):
         return HandRange(repr(self)).hands[0][0]
 
+
+class CardSet(CardIterableMixin, list):
     def bulkpop(self, nb_cards):
         return self.__class__(self.pop() for _ in range(nb_cards))
+
+    def draw_hole(self):
+        return Hole(self.bulkpop(2))
 
 
 def generate_deck():
