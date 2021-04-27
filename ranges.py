@@ -35,7 +35,7 @@ for pos, rrr in RANGES.items():
     print()
     to_raise.update(POS_MAP[pos])
 
-    hand = deck.bulkpop(2)
+    hand = deck.draw_hole()
     hhh_eval = hand.as_eval()
     should_raise = hhh_eval in to_raise
 
