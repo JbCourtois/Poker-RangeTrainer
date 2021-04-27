@@ -27,8 +27,8 @@ class Rank(IndexableMixin, str):
 
 
 RANKS = [Rank(rank) for rank in [
-    'A', 'K', 'Q', 'J', 'T',
-    '9', '8', '7', '6', '5', '4', '3', '2',
+    '2', '3', '4', '5', '6', '7', '8', '9',
+    'T', 'J', 'Q', 'K', 'A',
 ]]
 
 
@@ -62,6 +62,13 @@ class Card(namedtuple('Card', ['rank', 'suit'])):
     def __gt__(self, other):
         return (self.rank, self.suit) > (other.rank, other.suit)
 
+    @classmethod
+    def from_eval(cls, card):
+        rank = RANKS[card.rank]
+        suit = SUITS[card.suit]
+
+        return cls(rank, suit)
+
 
 class CardSet(list):
     def __str__(self):
@@ -70,12 +77,16 @@ class CardSet(list):
     def __repr__(self):
         return ''.join(map(repr, self))
 
+    @classmethod
+    def from_eval(cls, cards):
+        return cls(map(Card.from_eval, cards))
+
     @property
     def token(self):
         if len(self) <= 1:
             return repr(self)
 
-        ranks = ''.join(sorted(card.rank for card in self))
+        ranks = ''.join(sorted((card.rank for card in self), reverse=True))
         suffix = (
             '' if self[0].rank == self[1].rank else
             's' if self[0].suit == self[1].suit else
